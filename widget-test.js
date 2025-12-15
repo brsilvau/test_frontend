@@ -55,7 +55,7 @@
 
         // Leer los datos
         const accessToken = getQueryParamFromScript(scriptId, 'jwt'); // De Query Param (src)
-        const customerId = getCookie('CLID');             // De Cookie
+        const customerId = getCookie('uf_geoip');             // De Cookie
         const systemKey = getCookie('TEST_SYSTEM_KEY');               // De Cookie
         
         const containerId = scriptElement.getAttribute('data-container-id');
