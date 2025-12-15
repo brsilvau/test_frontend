@@ -16,6 +16,7 @@
      * Lee el valor de una cookie por su nombre.
      */
     function getCookie(name) {
+        console.log(name);
         const value = `; ${document.cookie}`;
         const parts = value.split(`; ${name}=`);
         // Si hay dos partes, la segunda contiene el valor y lo que le siga.
