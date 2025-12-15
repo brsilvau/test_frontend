@@ -77,7 +77,7 @@
         }
 
         htmlContent += '<ul>';
-        htmlContent += `<li><strong>JWT (Query Param):</strong> ${accessToken ? 'Leído (' + accessToken.substring(0, 10) + '...)' : '❌ NO LEÍDO'}</li>`;
+        htmlContent += `<li><strong>JWT (Query Param desde script):</strong> ${accessToken ? 'Leído (' + accessToken.substring(0, 10) + '...)' : '❌ NO LEÍDO'}</li>`;
         htmlContent += `<li><strong>Customer ID (Cookie):</strong> ${customerId ? 'Leído (' + customerId + ')' : '❌ NO LEÍDO'}</li>`;
         htmlContent += `<li><strong>System Key (Cookie):</strong> ${systemKey ? 'Leído (' + systemKey + ')' : '❌ NO LEÍDO'}</li>`;
         htmlContent += '</ul>';
