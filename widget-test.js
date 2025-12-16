@@ -1,7 +1,7 @@
 /**
  * Archivo: widget-test.js
  * Propósito: Script estático para probar la lectura de JWT (Query Param) y
- * Customer ID/System Key (Cookies) en un entorno cross-domain.
+ * Customer ID/System Key (Data Attributes) en un entorno cross-domain.
  *
  * NOTA: Este script DEBE estar referenciado por la etiqueta <script> con
  * id="planok-notes-widget" en el HTML de tu PHP.
@@ -11,18 +11,6 @@
     // ----------------------------------------------------------------------
     // 1. FUNCIONES DE UTILIDAD PARA LA LECTURA DE DATOS
     // ----------------------------------------------------------------------
-
-    /**
-     * Lee el valor de una cookie por su nombre.
-     */
-    function getCookie(name) {
-        console.log(name);
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        // Si hay dos partes, la segunda contiene el valor y lo que le siga.
-        if (parts.length === 2) return parts.pop().split(';').shift() ?? null;
-        return null;
-    }
 
     /**
      * Lee un parámetro de la URL del script que lo cargó, asumiendo el ID fijo.
@@ -40,6 +28,17 @@
         }
     }
 
+    /**
+     * Lee un Data Attribute directamente de la etiqueta <script>.
+     */
+    function getDataAttributeFromScript(scriptElement, attributeName) {
+        // Los data-attributes se leen en JavaScript sin el prefijo 'data-'
+        // Ejemplo: 'data-customer-id' se lee como 'customer-id'
+        const value = scriptElement.getAttribute(attributeName);
+        // Si el valor es una cadena vacía, retorna null (coherente con el chequeo de null en el PHP original)
+        return value === '' ? null : value; 
+    }
+
     // ----------------------------------------------------------------------
     // 2. FUNCIÓN PRINCIPAL DE INICIALIZACIÓN
     // ----------------------------------------------------------------------
@@ -55,8 +54,12 @@
 
         // Leer los datos
         const accessToken = getQueryParamFromScript(scriptId, 'jwt'); // De Query Param (src)
-        const customerId = getCookie('uf_geoip');             // De Cookie
-        const systemKey = getCookie('TEST_SYSTEM_KEY');               // De Cookie
+        
+        // ************************************************
+        // * LECTURA ACTUALIZADA: De Data Attributes
+        // ************************************************
+        const customerId = getDataAttributeFromScript(scriptElement, 'data-customer-id');
+        const systemKey = getDataAttributeFromScript(scriptElement, 'data-system-key');
         
         const containerId = scriptElement.getAttribute('data-container-id');
         const container = document.getElementById(containerId || 'test-componente-container');
@@ -78,16 +81,19 @@
 
         htmlContent += '<ul>';
         htmlContent += `<li><strong>JWT (Query Param desde script):</strong> ${accessToken ? 'Leído (' + accessToken.substring(0, 10) + '...)' : '❌ NO LEÍDO'}</li>`;
-        htmlContent += `<li><strong>Customer ID (Cookie):</strong> ${customerId ? 'Leído (' + customerId + ')' : '❌ NO LEÍDO'}</li>`;
-        htmlContent += `<li><strong>System Key (Cookie):</strong> ${systemKey ? 'Leído (' + systemKey + ')' : '❌ NO LEÍDO'}</li>`;
+        // ************************************************
+        // * Etiquetas actualizadas
+        // ************************************************
+        htmlContent += `<li><strong>Customer ID (Data Attribute):</strong> ${customerId ? 'Leído (' + customerId + ')' : '❌ NO LEÍDO'}</li>`;
+        htmlContent += `<li><strong>System Key (Data Attribute):</strong> ${systemKey ? 'Leído (' + systemKey + ')' : '❌ NO LEÍDO'}</li>`;
         htmlContent += '</ul>';
 
         // 3. Inyectar el resultado en el contenedor
         container.innerHTML = htmlContent;
         
         if (success) {
-             // Aquí iría la lógica para hacer la llamada API autenticada y renderizar la interfaz real.
-             console.log("Test Widget OK: Datos recibidos y listo para iniciar la aplicación real.");
+            // Aquí iría la lógica para hacer la llamada API autenticada y renderizar la interfaz real.
+            console.log("Test Widget OK: Datos recibidos y listo para iniciar la aplicación real.");
         }
     }
 
